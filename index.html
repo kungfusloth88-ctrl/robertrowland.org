@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Robert Rowland</title>
+
+<style>
+html,body{
+    margin:0;
+    height:100%;
+    background:#fff;
+    color:#000;
+    font-family:Georgia, serif;
+}
+
+body{
+    overflow:hidden;
+}
+
+h1{
+    position:absolute;
+    top:40px;
+    left:50%;
+    transform:translateX(-50%);
+    font-weight:400;
+    font-size:42px;
+    letter-spacing:.03em;
+}
+
+#enter{
+    position:absolute;
+    left:50%;
+    top:55%;
+    transform:translate(-50%,-50%);
+    border:none;
+    background:none;
+    color:#000;
+    font-size:20px;
+    cursor:pointer;
+    padding:12px;
+}
+
+#hint{
+    position:absolute;
+    bottom:24px;
+    left:50%;
+    transform:translateX(-50%);
+    color:#999;
+    font-size:13px;
+    opacity:0;
+    transition:.3s;
+}
+
+.touch #hint{
+    opacity:.55;
+}
+
+.showHint #hint{
+    opacity:.55;
+}
+</style>
+</head>
+
+<body>
+
+<h1>robert rowland</h1>
+
+<button id="enter">enter</button>
+
+<div id="hint">
+desktop: hold Shift &nbsp;&nbsp;•&nbsp;&nbsp; mobile: tap
+</div>
+
+<script>
+
+const button=document.getElementById("enter");
+const body=document.body;
+
+const isTouch=
+('ontouchstart' in window)||
+navigator.maxTouchPoints>0;
+
+if(isTouch){
+    body.classList.add("touch");
+}
+
+let shift=false;
+let misses=0;
+
+document.addEventListener("keydown",e=>{
+    if(e.key==="Shift") shift=true;
+});
+
+document.addEventListener("keyup",e=>{
+    if(e.key==="Shift") shift=false;
+});
+
+button.addEventListener("mouseenter",()=>{
+
+    if(isTouch) return;
+    if(shift) return;
+
+    misses++;
+
+    if(misses>=2){
+        body.classList.add("showHint");
+    }
+
+    const padding=30;
+
+    const maxX=window.innerWidth-button.offsetWidth-padding;
+    const maxY=window.innerHeight-button.offsetHeight-padding;
+
+    button.style.left=Math.random()*maxX+padding+"px";
+    button.style.top=Math.random()*maxY+padding+"px";
+    button.style.transform="translate(0,0)";
+});
+
+button.addEventListener("click",e=>{
+
+    if(!isTouch && !shift){
+        e.preventDefault();
+        return;
+    }
+
+    window.location="writing.html";
+
+});
+
+</script>
+
+</body>
+</html>
