@@ -109,10 +109,10 @@ ul {
 }
 
 .topic {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr auto;
     gap: 20px;
-    padding: 7px 0;
+    padding: 8px 0;
     border-bottom: 1px solid #eee;
 }
 
@@ -123,8 +123,14 @@ ul {
     font-size: 19px;
 }
 
+.topic a {
+    cursor: pointer;
+}
+
 .topic a:hover {
     font-style: italic;
+    text-decoration: underline;
+    text-underline-offset: 3px;
 }
 
 .type {
@@ -132,6 +138,14 @@ ul {
     font-size: 13px;
     white-space: nowrap;
     align-self: center;
+}
+
+.tags {
+    grid-column: 1 / -1;
+    color: #999;
+    font-size: 12px;
+    line-height: 1.4;
+    margin-top: -2px;
 }
 
 mark {
@@ -142,6 +156,12 @@ mark {
 
 .hidden {
     display: none;
+}
+
+.empty {
+    color: #777;
+    font-size: 16px;
+    margin-top: 40px;
 }
 
 @media (max-width: 600px) {
@@ -162,7 +182,8 @@ mark {
         padding: 10px 0;
     }
 
-    .type {
+    .type,
+    .tags {
         display: block;
         margin-top: 4px;
     }
@@ -181,89 +202,33 @@ mark {
 
     <div class="search-wrap">
         <label for="search">search topics</label>
-        <input id="search" type="search" autocomplete="off" placeholder="try: verdun, screenplay, gov, note">
+        <input id="search" type="search" autocomplete="off" placeholder="try: website, screenplay, biotech, note">
         <div id="count"></div>
     </div>
 
-    <section id="archive">
-
-        <details class="year" open>
-            <summary>2026</summary>
-
-            <details class="month" open>
-                <summary>July</summary>
-
-                <section class="day" data-date="2026-07-10">
-                    <h3></h3>
-
-                    <ul>
-                        <li class="topic" data-search="robertrowland.org website github pages personal archive notebook">
-                            <span class="unlinked topic-title">robertrowland.org begins</span>
-                            <span class="type">note</span>
-                        </li>
-
-                        <li class="topic" data-search="website as notebook archive structure writing notes unfinished ideas">
-    <a class="topic-title" href="/notes/2026/07/10/website-as-working-notebook/">website as working notebook</a>
-    <span class="type">note</span>
-</li>
-
-                        <li class="topic" data-search="screenplay draft fragments fiction seer future prediction">
-                            <span class="unlinked topic-title">seer screenplay draft fragments</span>
-                            <span class="type">screenplay</span>
-                        </li>
-
-                        <li class="topic" data-search="images video media screenshots maps reference visual archive">
-                            <span class="unlinked topic-title">media archive concept</span>
-                            <span class="type">media</span>
-                        </li>
-                    </ul>
-                </section>
-
-            </details>
-        </details>
-
-    </section>
+    <section id="archive"></section>
 </main>
 
+<script src="/data/notes.js"></script>
+
 <script>
+const archive = document.getElementById("archive");
 const search = document.getElementById("search");
 const count = document.getElementById("count");
-const topics = Array.from(document.querySelectorAll(".topic"));
-const days = Array.from(document.querySelectorAll(".day"));
-const months = Array.from(document.querySelectorAll(".month"));
-const years = Array.from(document.querySelectorAll(".year"));
 
-function formatDayHeadings() {
-    days.forEach(day => {
-        const dateValue = day.dataset.date;
-        const heading = day.querySelector("h3");
-
-        if (!dateValue || !heading) return;
-
-        const date = new Date(dateValue + "T12:00:00");
-
-        const formatted = date.toLocaleDateString("en-US", {
-            weekday: "long",
-            month: "long",
-            day: "numeric",
-            year: "numeric"
-        });
-
-        heading.textContent = formatted;
-    });
-}
-
-function escapeRegExp(text) {
-    return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
+const notes = Array.isArray(window.NOTES) ? window.NOTES : [];
 
 function escapeHTML(text) {
-    return text
+    return String(text ?? "")
         .replaceAll("&", "&amp;")
         .replaceAll("<", "&lt;")
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
+}
+
+function escapeRegExp(text) {
+    return String(text).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 function highlightText(text, query) {
@@ -274,76 +239,160 @@ function highlightText(text, query) {
     }
 
     const pattern = new RegExp("(" + escapeRegExp(query) + ")", "ig");
-
     return safeText.replace(pattern, "<mark>$1</mark>");
 }
 
-function prepareTopicTitles() {
-    topics.forEach(topic => {
-        const title = topic.querySelector(".topic-title");
-        if (!title) return;
+function parseDate(dateValue) {
+    return new Date(dateValue + "T12:00:00");
+}
 
-        title.dataset.originalText = title.textContent;
+function getYear(dateValue) {
+    return parseDate(dateValue).getFullYear();
+}
+
+function getMonthName(dateValue) {
+    return parseDate(dateValue).toLocaleDateString("en-US", {
+        month: "long"
     });
 }
 
-function updateSearch() {
+function getFullDate(dateValue) {
+    return parseDate(dateValue).toLocaleDateString("en-US", {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+        year: "numeric"
+    });
+}
+
+function getSearchText(note) {
+    return [
+        note.title,
+        note.type,
+        note.summary,
+        note.sourceTitle,
+        note.llmTool,
+        ...(note.tags || [])
+    ].join(" ").toLowerCase();
+}
+
+function groupNotes(filteredNotes) {
+    const groups = {};
+
+    filteredNotes.forEach(note => {
+        const year = getYear(note.date);
+        const month = getMonthName(note.date);
+        const date = note.date;
+
+        if (!groups[year]) groups[year] = {};
+        if (!groups[year][month]) groups[year][month] = {};
+        if (!groups[year][month][date]) groups[year][month][date] = [];
+
+        groups[year][month][date].push(note);
+    });
+
+    return groups;
+}
+
+function renderArchive() {
     const query = search.value.trim().toLowerCase();
-    let matches = 0;
 
-    topics.forEach(topic => {
-        const title = topic.querySelector(".topic-title");
-        const originalTitle = title ? title.dataset.originalText : "";
-        const searchableText = (
-            topic.innerText + " " + topic.dataset.search
-        ).toLowerCase();
+    const filteredNotes = notes
+        .filter(note => {
+            if (!query) return true;
+            return getSearchText(note).includes(query);
+        })
+        .sort((a, b) => {
+            return b.date.localeCompare(a.date) || a.title.localeCompare(b.title);
+        });
 
-        const isMatch = !query || searchableText.includes(query);
+    archive.innerHTML = "";
 
-        topic.classList.toggle("hidden", !isMatch);
+    if (filteredNotes.length === 0) {
+        archive.innerHTML = '<div class="empty">no matches</div>';
+        count.textContent = query ? "0 matches" : "";
+        return;
+    }
 
-        if (title) {
-            title.innerHTML = highlightText(originalTitle, query);
-        }
-
-        if (isMatch && query) {
-            matches++;
-        }
-    });
-
-    days.forEach(day => {
-        const visibleTopics = day.querySelectorAll(".topic:not(.hidden)").length;
-        day.classList.toggle("hidden", visibleTopics === 0);
-    });
-
-    months.forEach(month => {
-        const visibleDays = month.querySelectorAll(".day:not(.hidden)").length;
-        month.classList.toggle("hidden", visibleDays === 0);
-
-        if (query && visibleDays > 0) {
-            month.open = true;
-        }
-    });
+    const groups = groupNotes(filteredNotes);
+    const years = Object.keys(groups).sort((a, b) => b - a);
 
     years.forEach(year => {
-        const visibleMonths = year.querySelectorAll(".month:not(.hidden)").length;
-        year.classList.toggle("hidden", visibleMonths === 0);
+        const yearDetails = document.createElement("details");
+        yearDetails.className = "year";
+        yearDetails.open = true;
 
-        if (query && visibleMonths > 0) {
-            year.open = true;
-        }
+        const yearSummary = document.createElement("summary");
+        yearSummary.textContent = year;
+        yearDetails.appendChild(yearSummary);
+
+        const months = Object.keys(groups[year]);
+
+        months.forEach(month => {
+            const monthDetails = document.createElement("details");
+            monthDetails.className = "month";
+            monthDetails.open = true;
+
+            const monthSummary = document.createElement("summary");
+            monthSummary.textContent = month;
+            monthDetails.appendChild(monthSummary);
+
+            const dates = Object.keys(groups[year][month]).sort((a, b) => b.localeCompare(a));
+
+            dates.forEach(date => {
+                const daySection = document.createElement("section");
+                daySection.className = "day";
+
+                const heading = document.createElement("h3");
+                heading.textContent = getFullDate(date);
+                daySection.appendChild(heading);
+
+                const list = document.createElement("ul");
+
+                groups[year][month][date].forEach(note => {
+                    const item = document.createElement("li");
+                    item.className = "topic";
+
+                    const titleHTML = highlightText(note.title, query);
+
+                    if (note.url) {
+                        item.innerHTML = `
+                            <a class="topic-title" href="${escapeHTML(note.url)}">${titleHTML}</a>
+                            <span class="type">${escapeHTML(note.type)}</span>
+                            <span class="tags">${escapeHTML((note.tags || []).join(" / "))}</span>
+                        `;
+                    } else {
+                        item.innerHTML = `
+                            <span class="unlinked topic-title">${titleHTML}</span>
+                            <span class="type">${escapeHTML(note.type)}</span>
+                            <span class="tags">${escapeHTML((note.tags || []).join(" / "))}</span>
+                        `;
+                    }
+
+                    list.appendChild(item);
+                });
+
+                daySection.appendChild(list);
+                monthDetails.appendChild(daySection);
+            });
+
+            yearDetails.appendChild(monthDetails);
+        });
+
+        archive.appendChild(yearDetails);
     });
 
     if (!query) {
         count.textContent = "";
     } else {
-        count.textContent = matches === 1 ? "1 match" : matches + " matches";
+        count.textContent = filteredNotes.length === 1
+            ? "1 match"
+            : filteredNotes.length + " matches";
     }
 }
 
-formatDayHeadings();
-prepareTopicTitles();
-search.addEventListener("input", updateSearch);
+search.addEventListener("input", renderArchive);
+renderArchive();
 </script>
 
 </body>
