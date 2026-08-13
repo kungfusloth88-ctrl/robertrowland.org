@@ -106,73 +106,73 @@ window.NOTES = [
 
     url: null
   },
-{
-  id: "cube-inside-the-sphere",
-  title: "cube inside the sphere",
-  date: "2026-07-14",
-  type: "field note",
 
-  status: "rough public note",
+  {
+    id: "cube-inside-the-sphere",
+    title: "cube inside the sphere",
+    date: "2026-07-14",
+    type: "field note",
 
-  summary: "A field note prompted by a UFO podcast, Trevor Paglen's Palladium #4, and the resemblance between an electronic-warfare balloon design and pilot descriptions of a cube or square inside a spherical object.",
+    status: "rough public note",
 
-  sourceTitle: "Trevor Paglen, Palladium #4 / UFO podcast / reference image",
-  sourceUrl: null,
-  sourceAccessed: "2026-07-14",
+    summary: "A field note prompted by a UFO podcast, Trevor Paglen's Palladium #4, and the resemblance between an electronic-warfare balloon design and pilot descriptions of a cube or square inside a spherical object.",
 
-  llmUsed: true,
-  llmTool: "ChatGPT",
-  llmDate: "2026-07-14",
+    sourceTitle: "Trevor Paglen, Palladium #4 / UFO podcast / reference image",
+    sourceUrl: null,
+    sourceAccessed: "2026-07-14",
 
-  tags: [
-    "UFOs",
-    "UAP",
-    "Trevor Paglen",
-    "Palladium",
-    "Project Palladium",
-    "electronic warfare",
-    "balloons",
-    "radar deception",
-    "visual deception",
-    "sensor spoofing",
-    "military deception",
-    "perception stack"
-  ],
+    llmUsed: true,
+    llmTool: "ChatGPT",
+    llmDate: "2026-07-14",
 
-  url: "/notes/2026/07/14/cube-inside-the-sphere/"
-},  url: "/notes/2026/07/14/cube-inside-the-sphere/"
-},
+    tags: [
+      "UFOs",
+      "UAP",
+      "Trevor Paglen",
+      "Palladium",
+      "Project Palladium",
+      "electronic warfare",
+      "balloons",
+      "radar deception",
+      "visual deception",
+      "sensor spoofing",
+      "military deception",
+      "perception stack"
+    ],
 
-{
-  id: "the-denominator-problem",
-  title: "the denominator problem",
-  date: "2026-08-12",
-  type: "after-action note",
+    url: "/notes/2026/07/14/cube-inside-the-sphere/"
+  },
 
-  status: "public draft",
+  {
+    id: "the-denominator-problem",
+    title: "the denominator problem",
+    date: "2026-08-12",
+    type: "after-action note",
 
-  summary: "An after-action note about heat-related shipping complaints, missing denominators, and how a company can collect more operational intelligence every year while still failing to turn complaints into rates.",
+    status: "public draft",
 
-  sourceTitle: "Internal analysis session",
-  sourceUrl: null,
-  sourceAccessed: "2026-08-12",
+    summary: "An after-action note about heat-related shipping complaints, missing denominators, and how a company can collect more operational intelligence every year while still failing to turn complaints into rates.",
 
-  llmUsed: true,
-  llmTool: "ChatGPT",
-  llmDate: "2026-08-12",
+    sourceTitle: "Internal analysis session",
+    sourceUrl: null,
+    sourceAccessed: "2026-08-12",
 
-  tags: [
-    "organizational intelligence",
-    "logistics",
-    "cold chain",
-    "measurement",
-    "customer support",
-    "operations",
-    "denominators",
-    "shipping",
-    "after-action"
-  ],
+    llmUsed: true,
+    llmTool: "ChatGPT",
+    llmDate: "2026-08-12",
 
-  url: "/notes/2026/08/12/the-denominator-problem/"
-}
+    tags: [
+      "organizational intelligence",
+      "logistics",
+      "cold chain",
+      "measurement",
+      "customer support",
+      "operations",
+      "denominators",
+      "shipping",
+      "after-action"
+    ],
+
+    url: "/notes/2026/08/12/the-denominator-problem/"
+  }
 ];
