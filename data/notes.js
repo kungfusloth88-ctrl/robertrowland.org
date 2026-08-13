@@ -140,4 +140,39 @@ window.NOTES = [
   ],
 
   url: "/notes/2026/07/14/cube-inside-the-sphere/"
-}];
+},  url: "/notes/2026/07/14/cube-inside-the-sphere/"
+},
+
+{
+  id: "the-denominator-problem",
+  title: "the denominator problem",
+  date: "2026-08-12",
+  type: "after-action note",
+
+  status: "public draft",
+
+  summary: "An after-action note about heat-related shipping complaints, missing denominators, and how a company can collect more operational intelligence every year while still failing to turn complaints into rates.",
+
+  sourceTitle: "Internal analysis session",
+  sourceUrl: null,
+  sourceAccessed: "2026-08-12",
+
+  llmUsed: true,
+  llmTool: "ChatGPT",
+  llmDate: "2026-08-12",
+
+  tags: [
+    "organizational intelligence",
+    "logistics",
+    "cold chain",
+    "measurement",
+    "customer support",
+    "operations",
+    "denominators",
+    "shipping",
+    "after-action"
+  ],
+
+  url: "/notes/2026/08/12/the-denominator-problem/"
+}
+];
